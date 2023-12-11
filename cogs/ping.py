@@ -7,7 +7,8 @@ class ping(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send(f'Pong! 🏓 {round(self.bot.latency * 1000)}ms')
+        embed=discord.Embed(title="Pong! 🏓", description=f'{round(self.bot.latency * 1000)}ms', color=0x00ff00)
+        await ctx.send(embed=embed)
 
 async def setup(bot):
     await bot.add_cog(ping(bot))

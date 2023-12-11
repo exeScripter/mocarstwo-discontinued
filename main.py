@@ -15,6 +15,9 @@ intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+# Turn off the default help command
+bot.remove_command('help')
+
 # Cogs
 async def load():
     for filename in os.listdir('./cogs'):
@@ -27,7 +30,7 @@ async def load():
 @bot.event 
 async def on_ready():
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="!help"))
-    print(f'Zalogowano jako {bot.user.name}')
+    print(f'Zalogowano jako {bot.user.name}!')
     await load()  # Call the load function here
 
 
