@@ -1,25 +1,35 @@
 # Import the required modules
 import discord
+import asyncio
 import os 
 from discord.ext import commands
 
 # Import the .env
 from dotenv import load_dotenv
 
-class MocarstwoClient(discord.Client):
-    async def on_ready(self):
-        print("Czołem!")
-        print(f'Zalogowano jako {self.user}!')
-
-    async def on_message(self, message):
-        print(f'Wiadomość od {message.author}: {message.content}')
-
-intents = discord.Intents.default()
-intents.message_content = True
-
-client = MocarstwoClient(intents=intents)
-
-# Load .env
+# Load the .env
 load_dotenv()
-client.run(os.getenv('TOKEN'))
-    
+
+# Intents
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents)
+
+# Cogs
+async def load():
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            await bot.load_extension(f'cogs.{filename[:-3]}')
+            print(f'[+] Załadowano {filename}!')
+
+
+# Event when the bot is ready
+@bot.event 
+async def on_ready():
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="!help"))
+    print(f'Zalogowano jako {bot.user.name}')
+    await load()  # Call the load function here
+
+
+# Run the bot
+bot.run(os.getenv('TOKEN'))
